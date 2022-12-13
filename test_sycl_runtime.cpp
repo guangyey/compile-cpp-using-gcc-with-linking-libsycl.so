@@ -124,6 +124,14 @@ int main() {
 
     dpcppGetCurrentQueue().memcpy(device_data, host_data, DATA_SIZE * sizeof(int));
     dpcppGetCurrentQueue().wait();
+    for (int i = 0; i < DATA_SIZE; i++) {
+      host_data[i] = i;
+    }
+    dpcppGetCurrentQueue().memcpy(host_data, device_data, DATA_SIZE * sizeof(int));
+    dpcppGetCurrentQueue().wait();
+    for (int i = 1020; i < DATA_SIZE; i++) {
+      std::cout << host_data[i] << std::endl;
+    }
   
     // dpcppGetCurrentQueue().parallel_for(DATA_SIZE, [=](sycl::id<1> idx) {
     //     device_data[idx] = idx;
