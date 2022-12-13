@@ -117,14 +117,22 @@ int main() {
 
     auto device_data = sycl::malloc_device<int>(DATA_SIZE, dpcppGetCurrentQueue());
     int* host_data = (int *)malloc(DATA_SIZE * sizeof(DATA_SIZE));
-    dpcppGetCurrentQueue().parallel_for(DATA_SIZE, [=](sycl::id<1> idx) {
-        device_data[idx] = idx;
-    });
-    dpcppGetCurrentQueue().wait();
-    dpcppGetCurrentQueue().memcpy(host_data, device_data, DATA_SIZE * sizeof(int));
-    dpcppGetCurrentQueue().wait();
-    for (int i = 1020; i < DATA_SIZE; i++) {
-        std::cout << host_data[i] << std::endl;
+
+    for (int i = 0; i < DATA_SIZE; i++) {
+      host_data[i] = 2;
     }
+
+    dpcppGetCurrentQueue().memcpy(device_data, host_data, DATA_SIZE * sizeof(int));
+    dpcppGetCurrentQueue().wait();
+  
+    // dpcppGetCurrentQueue().parallel_for(DATA_SIZE, [=](sycl::id<1> idx) {
+    //     device_data[idx] = idx;
+    // });
+    // dpcppGetCurrentQueue().wait();
+    // dpcppGetCurrentQueue().memcpy(host_data, device_data, DATA_SIZE * sizeof(int));
+    // dpcppGetCurrentQueue().wait();
+    // for (int i = 1020; i < DATA_SIZE; i++) {
+    //     std::cout << host_data[i] << std::endl;
+    // }
     std::cout << "finish!" << std::endl;
 }
